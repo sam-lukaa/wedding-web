@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-primary: #f8f6f2;
+}
+
+body {
+  color: #333;
+  background: #f8f6f2;
+  font-size: 14px;
+  font-family: 'Noto Sans', sans-serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Englebert', serif;
+}
+
+.MonsieurLaDoulaise {
+  font-family: 'Monsieur La Doulaise', serif;
+}
+
+.page-container {
+  @apply max-w-7xl mx-auto pb-20;
+}
+
+.page-header {
+  @apply text-center mb-12 space-y-4;
+}
+
+.page-title {
+  @apply text-4xl md:text-6xl font-bold tracking-wider;
+}
+
+.page-description {
+  @apply text-sm;
+}
