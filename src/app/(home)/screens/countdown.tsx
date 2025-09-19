@@ -13,7 +13,7 @@ export const CountdownScreen = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date()
-      const target = new Date('2025-08-20')
+      const target = new Date('2025-10-11')
       const diff = target.getTime() - now.getTime()
 
       setCountdown({

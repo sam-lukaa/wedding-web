@@ -1,6 +1,13 @@
+'use client'
+
 import { Mansory } from '@/components/UI/mansory'
+import { useGetUploads } from '../shared/services'
 
 export default function AlbumPage() {
+  const { data } = useGetUploads()
+
+  console.log('uploaded data: ', data)
+
   return (
     <main className="page-container">
       <header className="page-header">
@@ -11,7 +18,7 @@ export default function AlbumPage() {
         </p>
       </header>
 
-      <Mansory />
+      <Mansory data={data} />
     </main>
   )
 }

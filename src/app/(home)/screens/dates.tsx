@@ -9,7 +9,7 @@ type EventCardProps = {
 
 export const DatesScreen = () => {
   return (
-    <main className="flex max-lg:flex-col justify-center w-full max-w-7xl px-8 py-16 gap-8">
+    <main className="flex max-lg:flex-col justify-center w-full max-w-7xl lg:px-8 py-16 gap-8">
       {/* Left: Save The Dates */}
       <section className="flex-1 flex flex-col justify-center">
         <h1 className="text-[5rem] md:text-[9rem] font-light leading-[0.95] text-gray-700 mb-8 tracking-wide">
