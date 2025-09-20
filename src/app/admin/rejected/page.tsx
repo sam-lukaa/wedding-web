@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CheckCircle, FileText, XIcon, DownloadIcon } from 'lucide-react';
-import { useGetUploads, useRejectUpload } from '@/app/shared/services';
+import { XCircle, FileText, CheckCircle, DownloadIcon } from 'lucide-react';
+import { useGetUploads, useApproveUpload } from '@/app/shared/services';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -22,13 +22,13 @@ interface UploadData {
   rejectionReason?: string;
 }
 
-export default function AdminApproved() {
-  const rejectMutation = useRejectUpload();
+export default function AdminRejected() {
+  const approveMutation = useApproveUpload();
   const { data: uploads = [], isLoading } = useGetUploads();
 
-  // Filter only approved uploads
-  const approvedFiles = uploads.filter(
-    (upload: UploadData) => upload.status === 'approved'
+  // Filter only rejected uploads
+  const rejectedFiles = uploads.filter(
+    (upload: UploadData) => upload.status === 'rejected'
   );
 
   // Generate deterministic aspect ratios for consistent layout
@@ -93,8 +93,8 @@ export default function AdminApproved() {
     }
   };
 
-  // Calculate total size of approved files
-  const totalSize = approvedFiles.reduce(
+  // Calculate total size of rejected files
+  const totalSize = rejectedFiles.reduce(
     (sum: number, file: UploadData) => sum + file.size,
     0
   );
@@ -108,12 +108,12 @@ export default function AdminApproved() {
 
   const stats = [
     {
-      title: 'Total Approved',
-      value: approvedFiles.length.toString(),
-      icon: CheckCircle,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
-      link: '/admin/approved',
+      title: 'Total Rejected',
+      value: rejectedFiles.length.toString(),
+      icon: XCircle,
+      color: 'text-red-600',
+      bgColor: 'bg-red-50',
+      link: '/admin/rejected',
     },
     {
       title: 'Total Size',
@@ -121,13 +121,13 @@ export default function AdminApproved() {
       icon: FileText,
       color: 'text-blue-600',
       bgColor: 'bg-blue-50',
-      link: '/admin/approved',
+      link: '/admin/rejected',
     },
   ];
 
-  const handleUnapprove = (fileId: string) => {
-    if (confirm('Are you sure you want to unapprove this file?')) {
-      rejectMutation.mutate(fileId);
+  const handleApprove = (fileId: string) => {
+    if (confirm('Are you sure you want to approve this file?')) {
+      approveMutation.mutate(fileId);
     }
   };
 
@@ -160,10 +160,10 @@ export default function AdminApproved() {
         transition={{ duration: 0.6 }}
       >
         <h1 className='text-3xl md:text-4xl font-bold text-gray-900 mb-3'>
-          Approved Files
+          Rejected Files
         </h1>
         <p className='text-lg text-gray-600 leading-relaxed'>
-          Gallery of approved uploads
+          Gallery of rejected uploads - review and approve if needed
         </p>
       </motion.header>
 
@@ -173,7 +173,7 @@ export default function AdminApproved() {
         variants={containerVariants}
         initial='hidden'
         animate='visible'
-        aria-label='Approved files statistics'
+        aria-label='Rejected files statistics'
       >
         {stats.map(stat => (
           <Link
@@ -205,33 +205,33 @@ export default function AdminApproved() {
         variants={containerVariants}
         initial='hidden'
         animate='visible'
-        aria-label='Approved files gallery'
+        aria-label='Rejected files gallery'
       >
         {isLoading ? (
           <div className='col-span-full text-center py-16'>
             <div className='flex items-center justify-center space-x-3'>
               <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
               <span className='text-gray-500 font-medium'>
-                Loading approved files...
+                Loading rejected files...
               </span>
             </div>
           </div>
-        ) : approvedFiles.length === 0 ? (
+        ) : rejectedFiles.length === 0 ? (
           <div className='col-span-full text-center py-16'>
             <div className='space-y-4'>
-              <CheckCircle className='mx-auto h-12 w-12 text-gray-400' />
+              <XCircle className='mx-auto h-12 w-12 text-gray-400' />
               <div className='space-y-2'>
                 <h3 className='text-lg font-medium text-gray-900'>
-                  No approved files
+                  No rejected files
                 </h3>
                 <p className='text-gray-500 max-w-sm mx-auto'>
-                  No files have been approved yet.
+                  No files have been rejected yet.
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          approvedFiles.map((file: UploadData, index: number) => (
+          rejectedFiles.map((file: UploadData, index: number) => (
             <motion.article
               key={file._id}
               variants={itemVariants}
@@ -291,17 +291,17 @@ export default function AdminApproved() {
                     </div>
                   )}
 
-                  {/* Unapprove Button - Bottom Right */}
+                  {/* Approve Button - Bottom Right */}
                   <button
                     onClick={e => {
                       e.stopPropagation();
-                      handleUnapprove(file._id);
+                      handleApprove(file._id);
                     }}
-                    className='absolute bottom-3 right-3 w-8 h-8 bg-red-500/80 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110'
-                    title={`Unapprove ${file.originalName}`}
-                    aria-label={`Unapprove ${file.originalName}`}
+                    className='absolute bottom-3 right-3 w-8 h-8 bg-green-500/80 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110'
+                    title={`Approve ${file.originalName}`}
+                    aria-label={`Approve ${file.originalName}`}
                   >
-                    <XIcon size='14' />
+                    <CheckCircle size='14' />
                   </button>
                 </figure>
 
@@ -317,8 +317,13 @@ export default function AdminApproved() {
                   </div>
                   <div className='text-xs text-gray-500 space-y-1'>
                     <p>Uploaded: {formatDate(file.uploadedAt)}</p>
-                    {file.approvedAt && (
-                      <p>Approved: {formatDate(file.approvedAt)}</p>
+                    {file.rejectedAt && (
+                      <p>Rejected: {formatDate(file.rejectedAt)}</p>
+                    )}
+                    {file.rejectionReason && (
+                      <p className='text-red-600 font-medium'>
+                        Reason: {file.rejectionReason}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -341,7 +346,7 @@ export default function AdminApproved() {
             Quick Actions
           </h3>
           <p className='text-gray-600'>
-            Manage approved files and perform bulk operations
+            Manage rejected files and perform bulk operations
           </p>
         </header>
         <div className='flex flex-wrap gap-4'>
@@ -352,10 +357,13 @@ export default function AdminApproved() {
             <FileText className='w-4 h-4 mr-2' />
             View Pending Files
           </Link>
-          <button className='inline-flex items-center px-5 py-3 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-sm hover:shadow-md'>
+          <Link
+            href='/admin/approved'
+            className='inline-flex items-center px-5 py-3 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200 shadow-sm hover:shadow-md'
+          >
             <CheckCircle className='w-4 h-4 mr-2' />
-            Export Gallery
-          </button>
+            View Approved Files
+          </Link>
         </div>
       </motion.section>
     </main>
