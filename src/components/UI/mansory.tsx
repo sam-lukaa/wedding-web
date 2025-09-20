@@ -75,13 +75,19 @@ export const Mansory = ({ data, children }: MansoryProps) => {
         >
           <figure
             className={`bg-gray-200 overflow-hidden ${image.aspectRatio} flex items-center justify-center relative cursor-pointer hover:opacity-90 transition-all duration-300 rounded-lg shadow-sm hover:shadow-md`}
-            onClick={() => image.src && window.open(image.src, '_blank')}
+            onClick={() => {
+              if (image.src) {
+                window.open(image.src, '_blank');
+              }
+            }}
             role='button'
             tabIndex={0}
             onKeyDown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                image.src && window.open(image.src, '_blank');
+                if (image.src) {
+                  window.open(image.src, '_blank');
+                }
               }
             }}
             aria-label={`View full size image: ${image.label}`}
