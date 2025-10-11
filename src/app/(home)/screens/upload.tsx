@@ -83,7 +83,7 @@ export const UploadScreen = () => {
           <figure className="w-full flex items-center justify-center md:justify-start">
             <span className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#f8f6f2] to-[#f3ede7] border border-gray-300 rounded-full text-gray-700 cursor-pointer hover:bg-gray-100 transition font-medium text-base shadow-sm tracking-wide">
              <UploadIcon size='14' />
-              <span>Click to upload</span>
+              <span>Click to upload(5mb max)</span>
             </span>
           </figure>
 
